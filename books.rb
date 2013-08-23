@@ -8,9 +8,7 @@ class Book
 		@file = gets.chomp
 		if File.exist?(@file)
 			puts "File Found"
-		else
-			puts "File Not Found"
-		end
+		
 			File.open(@file) do|f|
     		columns = f.readline.chomp.split('\t')
 		   until f.eof?
@@ -29,7 +27,6 @@ class Book
 								else
 								@bid = "B" + count.to_s
 								end
-								#puts @bid
 								if @bname == ""
 									puts "Name of the book can not be empty"
 									next
@@ -43,38 +40,62 @@ class Book
 								if @bstock == ""
 									@bstock = 0
 								end
+								
+								@bauthors = authors(@bauthors)
 								if @bauthors == ""
 									puts "Authors of the book can not be empty" 
 									next
 								end
+								
 								find = $db.query	("SELECT * FROM books WHERE name = '#{@bname}'")
 								if find.num_rows == 1
 									puts "Book is already there in database"
 									next
 								end	
 
-								$db.query("INSERT INTO books (booksid, name, price, stock, authors) VALUES ('#{@bid}', '#{@bname}', #{@bprice}, #{@bstock}, '#{@bauthors}')")
-<<<<<<< HEAD
+								$db.query("INSERT INTO books (bookid, name, price, stock, author_ids) VALUES ('#{@bid}', '#{@bname}', #{@bprice}, #{@bstock}, '#{@bauthors}')")
+
 								puts "Book ID      :- #{@bid} "
 								puts "Book Name    :- #{@bname} "
 								puts "Book Price   :- #{@bprice}"
 								puts "Stock        :- #{@bstock}"
 								puts "Book Authors :- #{@bauthors}"	
-=======
->>>>>>> 8850953d7686e2378c4b140fbecb2d9f41a116ee
-								puts "Record Add Successfully to the database"
+							puts "Record Add Successfully to the database"
 							rescue => e
 								puts "Error occured while inserting a record :- #{e}"
 							end
 				end
 	    	end
   			end
+		else
+			puts "File Not Found"
+		end
 	end
-<<<<<<< HEAD
+
+  def authors(string)
+		authors = []
+		@id = []
+		i= 0
+		authors = string.split', '
+		authors.each do |s|
+		@aid = $db.query("SELECT authorid FROM author WHERE aname = '#{s}' ")
+
+			@aid.each_hash do |h|
+				@id[i] =  h.values
+				i += 1
+			end
+		end
+		return @id.sort.join(', ')
+	end
 
 	def display_books
 		begin
-			books = $db.query	("SELECT * FROM books")
+			books = $db.query	("SELECT b.bookid, b.name, b.price, b.stock, a.aname 
+									FROM books AS b
+							        INNER JOIN
+								    book_author AS ba ON b.bookid = ba.book_id
+							        INNER JOIN
+								    author a ON ba.author_id = a.authorid")
 			if books.num_rows == 0
 			puts "No result found"
 			return
@@ -88,11 +109,17 @@ class Book
 		end
 	end
 
-	def find_book
+	def find_book_bybookname
 		begin
-			puts "Enter Book Name or Author of Book to find:"
+			puts "Enter Name of the Book to find:"
 			sname = gets.chomp
-			books = $db.query	("SELECT * FROM books WHERE name like '%#{sname}%' OR authors like '%#{sname}%'")
+			books = $db.query("SELECT b.bookid, b.name, b.price, b.stock, a.aname
+							FROM books AS b
+					        INNER JOIN
+						    book_author AS ba ON b.bookid = ba.book_id
+					        INNER JOIN
+						    author a ON ba.author_id = a.authorid
+							WHERE b.name LIKE '%#{sname}%'")
 			if books.num_rows == 0
 				puts "No result found"
 				return
@@ -120,8 +147,8 @@ b = Book.new
 loop do
 		puts %q{Please select an option:
 		1. Add the Records in Books table
-		2. Display the Record from Books table
-		3. Find the Book
+		2. Display the Books Information
+		3. Find the Book By Book Name
 		4. Quit }
 
 		case gets.chomp
@@ -130,13 +157,11 @@ loop do
 		when '2'
 			b.display_books
 		when '3'
-			b.find_book
+			b.find_book_bybookname
 		when '4'
 			b.quit
 		end
 	end
-=======
-end
 b = Book.new
 b.add_book
->>>>>>> 8850953d7686e2378c4b140fbecb2d9f41a116ee
+
