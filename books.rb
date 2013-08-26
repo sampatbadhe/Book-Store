@@ -15,7 +15,15 @@ class Book
 	      row = f.readline.chomp.split('\t')
 			row.each do |line| 		 
 				@bname ,@bprice,@bstock,@bauthors = line.split("\t")
+#puts @bauthors
 							begin
+								
+								find = $db.query	("SELECT * FROM books WHERE name = '#{@bname}'")
+								if find.num_rows == 1
+									puts "Book is already there in database"
+									next
+								end	
+
 								rs = $db.query("SELECT * FROM books")
 								count = rs.num_rows + 1
 								if count < 10
@@ -46,12 +54,6 @@ class Book
 									puts "Authors of the book can not be empty" 
 									next
 								end
-								
-								find = $db.query	("SELECT * FROM books WHERE name = '#{@bname}'")
-								if find.num_rows == 1
-									puts "Book is already there in database"
-									next
-								end	
 
 								$db.query("INSERT INTO books (bookid, name, price, stock, author_ids) VALUES ('#{@bid}', '#{@bname}', #{@bprice}, #{@bstock}, '#{@bauthors}')")
 
@@ -61,6 +63,7 @@ class Book
 								puts "Stock        :- #{@bstock}"
 								puts "Book Authors :- #{@bauthors}"	
 							puts "Record Add Successfully to the database"
+						insert_book_author(@bid, @bauthors)
 							rescue => e
 								puts "Error occured while inserting a record :- #{e}"
 							end
@@ -72,15 +75,66 @@ class Book
 		end
 	end
 
+	def insert_author(string)
+		begin
+				rs = $db.query("SELECT * FROM author")
+				count = rs.num_rows + 1
+				if count < 10
+					@aid = "A000" + count.to_s
+				elsif count < 100
+					@aid = "A00" + count.to_s
+				elsif count < 1000
+					@aid = "A0" + count.to_s
+				else
+					@aid = "A" + count.to_s
+				end
+				@aname = string
+				if @aname == ""
+					puts "Name of the Author can not be empty"
+				end
+					$db.query("INSERT INTO author (authorid, aname) VALUES ('#{@aid}', '#{@aname}')")
+
+						puts "Author ID      :- #{@aid} "
+						puts "Author Name    :- #{@aname} "
+				puts "Record is Added Successfully to the Author table in database"
+		rescue => e
+			puts "Error occured while inserting a Authors record :- #{e}"
+		end		
+	end
+
+	def insert_book_author(bookid, authorid)
+			begin
+				authors = []
+				@id = []
+				i= 0
+				authors = authorid.split', '
+				authors.each do |s|
+				$db.query("INSERT INTO book_author (book_id, author_id) VALUES ('#{bookid}', '#{s}')")
+						puts "Book ID      :- #{bookid} "
+						puts "Author ID    :- #{s} "
+				puts "Record is Added Successfully to the Book_Author table in database"
+					end
+
+			rescue => e
+				puts "Error occured while inserting a Book_Authors record :- #{e}"
+			end
+	end
+
   def authors(string)
 		authors = []
 		@id = []
 		i= 0
 		authors = string.split', '
 		authors.each do |s|
-		@aid = $db.query("SELECT authorid FROM author WHERE aname = '#{s}' ")
-
-			@aid.each_hash do |h|
+		@genaid = $db.query("SELECT authorid FROM author WHERE aname = '#{s}' ")
+			if @genaid.num_rows == 0 && s != ""
+				insert_author(s)
+				next
+			end
+		end
+		authors.each do |s|
+		@genaid = $db.query("SELECT authorid FROM author WHERE aname = '#{s}' ")
+				@genaid.each_hash do |h|
 				@id[i] =  h.values
 				i += 1
 			end
@@ -141,6 +195,7 @@ class Book
 			puts "Error :- #{e}"
 		end
 	end
+
 end
 b = Book.new
 
