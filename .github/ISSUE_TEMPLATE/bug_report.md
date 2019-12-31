@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: These information snippets are essential parts of project communication. A well-written bug ticket can help fix the issue and reduce the possibility of breaking an existing feature.
 title: ''
 labels: ''
 assignees: ''
