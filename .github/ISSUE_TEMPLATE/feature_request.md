@@ -1,27 +1,24 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: These information snippets are essential parts of project communication. A well-written feature ticket can eliminate confusion and save development time.
 title: ''
 labels: ''
 assignees: ''
 
 ---
-### User Story Title
-```
-As [the actor], I want [the something] so I can [the goal].
-Example:
-As a <customer> I want <log in to my account> so that <I can view my balance>
-```
+
 ### Task / Subtask Title
 
-The title should describe the action that the ticket is to fulfill.
+NOTE: The title should describe the action that the ticket is to fulfill.
 
 ### Description
-For Developer
+
+For Developer -
 ```
-Enter any extra information which may be helpful
-Do we need to correct / update existing data (Rake task)
+- Enter any extra information which may be helpful
+- Do we need to correct / update existing data (Rake task)
 ```
+
 For QA -
 ```
 - 'As is' and 'To be' state
@@ -30,8 +27,9 @@ For QA -
 - Impact areas - Business entities and apps
 ```
 
-### State the Acceptance Criteria
-This section is a checklist to confirm the work done on a ticket meets the intended purpose and maps the deliverable into smaller outcomes.
+### Acceptance Criteria
+
+NOTE: This section is a checklist to confirm the work done on a ticket meets the intended purpose and maps the deliverable into smaller outcomes.
 
 ```
 Scenario -  Sending a message through the valid email address
@@ -41,16 +39,25 @@ Then (this is the result) - The message is sent to the email address
 ```
 
 ### Linked Ticket
-It links other issues that are either dependent on this issue or vise Versa.
 
-### State the due date
-Expected date of completion of the task
+NOTE: It links other issues that are either dependent on this issue or vise Versa.
 
-### Add relevant attachments
-Mockups, images, flow diagrams related to the feature (if applicable)
+### Due date
+
+NOTE: Expected date of completion of the task
+
+### Attachments
+
+NOTE: Mockups, images, flow diagrams related to the feature (if applicable)
 
 ### Priority
-The creator can set the priority to implement(Urgent, High, Medium or Low)
+
+Urgent / High / Medium / Low
 
 ### Story Points
-Estimates the difficulty of implementing a given story, which is an abstract measure of effort required to implement it. In simple terms, a story point is a number that tells the team about the difficulty level of the story.
+
+NOTE: Estimates the difficulty of implementing a given story, which is an abstract measure of effort required to implement it. In simple terms, a story point is a number that tells the team about the difficulty level of the story.
+
+### QA Needed _(Add QA Checklist if applicable)_
+
+Yes / No
